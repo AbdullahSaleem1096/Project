@@ -1,0 +1,139 @@
+.contact-container {
+    background-color: #03003A;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    font-family: sans-serif;
+  }
+  
+  .contact-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  
+  .header-icon {
+    font-size: 1.2rem;
+    color: white;
+  }
+  
+  .contact-form-section {
+    background: #0e0b47;
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.7rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: #1c1a5e;
+    color: white;
+  }
+  
+  .btn-gradient {
+    background: linear-gradient(90deg, #3c59f3, #f542f5);
+    border: none;
+    color: white;
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .support-options {
+    background: #0e0b47;
+    border-radius: 1.5rem;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .support-icons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1rem;
+  }
+  
+  .support-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .support-title {
+    margin-top: 0.5rem;
+    font-weight: bold;
+  }
+  
+  .support-subtext {
+    font-size: 0.8rem;
+    color: #ccc;
+  }
+  
+  .bottom-nav {
+    background-color: #0e0b47;
+    padding: 0.8rem;
+    border-top: 1px solid #444;
+    display: flex;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 450px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+.signup-container {
+  min-height: 100vh;
+  background-color: #070046; /* your dark background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.signup-box {
+  background-color: #0B0549;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 500px;
+  color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header inside card */
+.support-header {
+  background-color: #2D2A7B;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1.5rem 1.5rem 0 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: -2rem -2rem 1rem -2rem; /* pulls it to top edge */
+  height: 80px;
+}
+
+/* Optional: to reset the card title spacing */
+.form-title {
+  margin-bottom: 1rem;
+}
+
+
+
+
+  

@@ -1,0 +1,71 @@
+.signup-container {
+    min-height: 100vh;
+    background-color: #03003A;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+  
+  .signup-box {
+    background: #0e0b47;
+    border-radius: 2rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    color: white;
+  }
+  
+  .brand-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #b458f5;
+  }
+  
+  .brand-subtitle {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+  }
+  
+  .form-card h4 {
+    margin-bottom: 1rem;
+  }
+  
+  .profile-pic-placeholder {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem auto;
+    border-radius: 50%;
+    background-color: #555;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .form-label {
+    color: white;
+  }
+  
+  .btn-gradient {
+    background: linear-gradient(90deg, #3c59f3, #f542f5);
+    border: none;
+    color: white;
+  }
+  
+  .divider {
+    margin: 1.5rem 0 0.5rem;
+    color: #aaa;
+  }
+  
+  .social-buttons button {
+    margin: 0.5rem;
+    width: 45%;
+  }
+  
+  .login-text {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+  
