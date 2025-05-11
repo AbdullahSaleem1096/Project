@@ -1,38 +1,79 @@
-.App {
-  text-align: center;
+/* Base Styles - Ensuring some basic mobile-first design */
+.app-wrapper {
+  padding: 0;
+  margin: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+/* Medium Devices (Phones) */
+@media (max-width: 760px) {
+  .container-fluid {
+    padding: 0 15px; /* Add some padding for smaller screens */
+  }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+  .navbar, .category-bar, .footer {
+    font-size: 14px; /* Adjust text sizes */
+  }
+
+  /* Ensure product list items are properly sized */
+  .product-list-item {
+    margin-bottom: 15px; /* Add spacing between items */
+  }
+
+  .category-bar {
+    font-size: 16px;
+  }
+
+  /* Adjust the show more button for phones */
+  .show-more-button {
+    width: 100%;
+    padding: 10px;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Large Devices (Laptops and larger screens) */
+@media (min-width: 1024px) {
+  .container-fluid {
+    padding: 0 30px; /* Add padding for larger screens */
   }
-  to {
-    transform: rotate(360deg);
+
+  .navbar, .category-bar, .footer {
+    font-size: 18px; /* Increase text size for larger screens */
+  }
+
+  /* Adjust product list for larger screens */
+  .product-list-item {
+    margin-bottom: 30px;
+  }
+
+  .category-bar {
+    font-size: 18px;
+  }
+
+  /* Adjust the show more button */
+  .show-more-button {
+    padding: 12px 20px;
+  }
+}
+
+/* Extra Large Devices (Desktops) */
+@media (min-width: 1650px) {
+  .container-fluid {
+    padding: 0 50px; /* Even more padding on extra large screens */
+  }
+
+  .navbar, .category-bar, .footer {
+    font-size: 20px; /* Even larger text size */
+  }
+
+  .product-list-item {
+    margin-bottom: 40px; /* Increase space between items */
+  }
+
+  .category-bar {
+    font-size: 20px;
+  }
+
+  .show-more-button {
+    padding: 15px 25px;
   }
 }

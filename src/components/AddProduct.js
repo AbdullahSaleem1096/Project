@@ -1,7 +1,7 @@
 import React from 'react';
 import './AddProduct.css'; 
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { Link } from 'react-router-dom';
+
 
 function AddProduct() {
   return (
