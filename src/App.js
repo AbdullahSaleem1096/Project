@@ -1,17 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import OnlineStore from './components/OnlineStore';
-import Messaging from './components/Messaging';
-
+import React from "react";
+import OrderConfirmation from "./components/OrderConfirmation";
 
 function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<OnlineStore />} />
-        <Route path="/chat" element={<Messaging />} />
-      </Routes>
-    </Router>
-  );
+  return <OrderConfirmation />;
 }
 
 export default App;

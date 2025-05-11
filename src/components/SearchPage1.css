@@ -1,0 +1,109 @@
+.search-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #0a0a3d;
+  color: white;
+  height: 100vh;
+  overflow-y: scroll;
+}
+
+/* Top Bar */
+.top-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.icon {
+  color: white;
+  margin-right: 15px;
+  font-size: 24px;
+}
+
+.search-input {
+  display: flex;
+  align-items: center;
+  background-color: black;
+  padding: 10px 15px;
+  border-radius: 25px;
+  width: 100%;
+}
+
+.search-icon {
+  margin-right: 10px;
+  color: white;
+}
+
+.search-input input {
+  border: none;
+  background-color: transparent;
+  outline: none;
+  font-size: 16px;
+  width: 100%;
+  color: white;
+}
+
+/* Category Scroll */
+h3 {
+  margin-bottom: 10px;
+}
+
+.category-scroll {
+  display: flex;
+  overflow-x: auto;
+  background-color: #1a1a2e;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20px;
+  color: white;
+}
+
+.circle {
+  background-color: #34345e;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  margin-bottom: 5px;
+  color: white;
+}
+
+.category-item span {
+  font-size: 12px;
+  text-align: center;
+}
+
+/* Search History */
+h4 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.search-history {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.history-pill {
+  background-color: #34345e;
+  border-radius: 20px;
+  margin: 5px;
+  padding: 5px 15px;
+  font-size: 14px;
+  color: white;
+}
+
+/* Hide scrollbar */
+.category-scroll::-webkit-scrollbar {
+  display: none;
+}
