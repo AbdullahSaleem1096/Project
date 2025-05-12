@@ -12,7 +12,7 @@ import SellerProductPage from './pages/SellerProduct';
 import SellerProfilePage from './pages/SellerProfile';
 import WishlistPage from './pages/Whishlist';
 import PaymentPage from './pages/Payment';
-
+import VerifyEmailPage from './pages/VerifyEmailPage';
 
 function App() {
   return (
@@ -20,6 +20,7 @@ function App() {
       <Routes>
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/edit-product" element={<EditProductPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
         <Route path="/add-product" element={<AddProductPage />} />
