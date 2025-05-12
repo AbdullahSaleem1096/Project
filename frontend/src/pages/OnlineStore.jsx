@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import './SellerProduct.css';
-import Cartbar from './Cartbar';
+import './OnlineStore.css';
+import Cartbar from './CartBar';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
 
-function SellerProduct() {
+function OnlineStore() {
   const [showCart, setShowCart] = useState(false);
   const navigate = useNavigate(); // ✅ correctly placed here
 
@@ -143,4 +143,4 @@ function SellerProduct() {
   );
 }
 
-export default SellerProduct;
+export default OnlineStore;

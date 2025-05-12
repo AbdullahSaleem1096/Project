@@ -3,7 +3,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { motion } from 'framer-motion';
 import { Card, Col, Row } from 'react-bootstrap';
-import Footer from './components/Footer';
+import Footer from './Footer';
 
 
 const teamMembers = [
