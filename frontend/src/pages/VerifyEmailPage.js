@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Spinner } from 'react-bootstrap';
 import './SignupPage.css'; // We can reuse the same styles
 
 function VerifyEmailPage() {
@@ -10,15 +11,22 @@ function VerifyEmailPage() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [countdown, setCountdown] = useState(600); // 10 minutes in seconds
+  const [userRole, setUserRole] = useState('');
 
   useEffect(() => {
-    // Get email from localStorage or state management
+    // Get email and role from localStorage
     const storedEmail = localStorage.getItem('userEmail');
+    const storedRole = localStorage.getItem('userRole');
+    
     if (!storedEmail) {
       navigate('/signup');
       return;
     }
+    
     setEmail(storedEmail);
+    if (storedRole) {
+      setUserRole(storedRole);
+    }
 
     // Start countdown timer
     const timer = setInterval(() => {
@@ -52,13 +60,25 @@ function VerifyEmailPage() {
       });
 
       if (response.data) {
+        // Store user data in localStorage
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        
         // Clear temporary data
         localStorage.removeItem('userEmail');
         localStorage.removeItem('tempUserId');
+        localStorage.removeItem('userRole');
         
-        // Show success message and redirect to login
-        alert('Email verified successfully! Please login.');
-        navigate('/login');
+        // Show success message
+        alert('Email verified successfully!');
+        
+        // Redirect based on user role
+        if (response.data.user.role === 'seller' || userRole === 'seller') {
+          // Redirect seller to store setup page
+          navigate('/seller/setup-store');
+        } else {
+          // Redirect buyer to home page
+          navigate('/home');
+        }
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Verification failed. Please try again.');
@@ -132,7 +152,19 @@ function VerifyEmailPage() {
               className="btn btn-gradient w-100 mb-3"
               disabled={loading || countdown === 0}
             >
-              {loading ? 'Verifying...' : 'Verify Email'}
+              {loading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Verifying...
+                </>
+              ) : 'Verify Email'}
             </button>
 
             <div className="text-center">

@@ -1,145 +1,256 @@
 import React, { useState, useEffect } from 'react';
-import './OnlineStore.css';
-import Cartbar from './CartBar';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import { Container, Row, Col, Card, Button, InputGroup, Form, Badge, Nav, Tab } from 'react-bootstrap';
+import { FaSearch, FaHeart, FaShoppingCart, FaStar, FaRegStar, FaStarHalfAlt, FaShare, FaChevronRight } from 'react-icons/fa';
 import { AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-
+import { useCart } from '../context/CartContext';
+import './OnlineStore.css';
 
 function OnlineStore() {
-  const [showCart, setShowCart] = useState(false);
-  const navigate = useNavigate(); // ✅ correctly placed here
-
-  const toggleCart = () => {
-    setShowCart((prev) => !prev);
-  };
+  const [activeTab, setActiveTab] = useState('description');
+  const navigate = useNavigate();
+  const { openCart, getTotalItems } = useCart();
 
   const openChat = () => {
-    navigate("/chat"); // ✅ navigate to MessagingUI page
+    navigate("/messaging");
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const renderStars = (rating) => {
+    return [...Array(5)].map((_, index) => {
+      const starValue = index + 1;
+      if (starValue <= rating) {
+        return <FaStar key={index} className="text-warning" />;
+      } else if (starValue - 0.5 <= rating) {
+        return <FaStarHalfAlt key={index} className="text-warning" />;
+      }
+      return <FaRegStar key={index} className="text-warning" />;
+    });
+  };
+
+  const relatedProducts = [
+    {
+      id: 1,
+      name: 'Gucci Duffle Bag',
+      price: 960,
+      image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      rating: 4.5,
+      reviews: 65
+    },
+    {
+      id: 2,
+      name: 'Premium Laptop',
+      price: 1299,
+      image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      rating: 4.8,
+      reviews: 128
+    },
+    {
+      id: 3,
+      name: 'Designer Jacket',
+      price: 799,
+      image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      rating: 4.2,
+      reviews: 89
+    },
+    {
+      id: 4,
+      name: 'Leather Bag',
+      price: 599,
+      image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      rating: 4.6,
+      reviews: 42
+    }
+  ];
+
   return (
-    <div className="product-page-container">
-      <div className="product-box position-relative">
-        {/* Header */}
-        <header className="header-bar d-flex justify-content-between align-items-center px-3 py-2">
-          <span className="brand">NUSTIFY</span>
-          <input type="text" className="search-input" placeholder="Search products" />
-          <div className="icons">
-            <i className="bi bi-cart2 me-3" onClick={toggleCart} style={{ cursor: 'pointer' }}></i>
-            <i className="bi bi-heart"></i>
+    <div className="online-store">
+      {/* Top Navigation Bar */}
+      <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
+        <Container>
+          <span className="navbar-brand fw-bold">NUSTIFY</span>
+          <div className="d-flex align-items-center flex-grow-1 mx-4">
+            <InputGroup className="search-bar">
+              <InputGroup.Text className="bg-white border-end-0">
+                <FaSearch className="text-muted" />
+              </InputGroup.Text>
+              <Form.Control
+                type="text"
+                placeholder="Search products..."
+                className="border-start-0"
+              />
+            </InputGroup>
           </div>
-        </header>
-
-        {/* Main content */}
-        <div className="product-card">
-          <div className="product-image-wrapper">
-            <img src="https://i.imgur.com/5R0uJqb.png" alt="Gamepad" className="product-img" />
-            <i className="bi bi-heart-fill heart-icon"></i>
+          <div className="d-flex align-items-center">
+            <Button variant="link" className="text-dark position-relative me-3" onClick={openCart}>
+              <FaShoppingCart size={20} />
+              <Badge bg="primary" className="position-absolute top-0 start-100 translate-middle rounded-pill">
+                {getTotalItems()}
+              </Badge>
+            </Button>
+            <Button variant="link" className="text-dark">
+              <FaHeart size={20} />
+            </Button>
           </div>
+        </Container>
+      </nav>
 
-          <div className="text-start px-3">
-            <h5 className="product-title">Havic HV G-92 Gamepad</h5>
-            <p className="rating">
-              ⭐⭐⭐⭐☆ <span className="review-count">(150 Reviews)</span>{' '}
-              <span className="in-stock">In&nbsp;stock</span>
-            </p>
-            <p className="location">Razi hostel, 318</p>
-            <h5 className="price">Rs. 1920</h5>
-            <button className="btn btn-buy mt-2">Buy&nbsp;Now</button>
+      {/* Main Content */}
+      <Container className="py-4">
+        <Row>
+          {/* Product Images */}
+          <Col lg={6} className="mb-4">
+            <Card className="border-0 shadow-sm">
+              <div className="position-relative">
+                <Card.Img 
+                  variant="top" 
+                  src="https://i.imgur.com/5R0uJqb.png" 
+                  alt="Gamepad"
+                  className="product-main-image"
+                />
+                <Button 
+                  variant="light" 
+                  className="position-absolute top-0 end-0 m-3 rounded-circle shadow-sm"
+                >
+                  <FaHeart className="text-danger" />
+                </Button>
+              </div>
+              <Card.Body className="p-0">
+                <Row className="g-2 p-3">
+                  {[1, 2, 3, 4].map((num) => (
+                    <Col key={num} xs={3}>
+                      <Card.Img 
+                        src={`https://i.imgur.com/5R0uJqb.png`} 
+                        alt={`Product ${num}`}
+                        className="product-thumbnail"
+                      />
+                    </Col>
+                  ))}
+                </Row>
+              </Card.Body>
+            </Card>
+          </Col>
 
-            {/* Description */}
-            <div className="section">
-              <div className="section-header">
-                Description <span className="view-all">VIEW ALL</span>
-              </div>
-              <div className="section-box">
-                PlayStation 5 Controller Skin: high-quality vinyl with adhesive
-                for easy bubble-free install &amp; mess-free …
-              </div>
-            </div>
-
-            {/* Reviews */}
-            <div className="section">
-              <div className="section-header">
-                Customer Reviews <span className="view-all">VIEW ALL</span>
-              </div>
-              <div className="section-box review-box">
-                <div className="reviewer">
-                  <i className="bi bi-key"></i> JOHN DOE
-                  <span className="time-ago"> • 2 days ago</span>
+          {/* Product Details */}
+          <Col lg={6}>
+            <div className="product-details">
+              <h1 className="product-title mb-3">Havic HV G-92 Gamepad</h1>
+              <div className="d-flex align-items-center mb-3">
+                <div className="me-3">
+                  {renderStars(4.5)}
                 </div>
-                <div className="stars">⭐⭐⭐⭐⭐</div>
-                <div>
-                  PlayStation 5 Controller Skin – high-quality vinyl with easy
-                  bubble-free install &amp; mess-free …
-                </div>
+                <span className="text-muted">(150 Reviews)</span>
+                <Badge bg="success" className="ms-3">In Stock</Badge>
               </div>
-              <button className="btn btn-write-review">Write a Review</button>
-            </div>
+              <p className="text-muted mb-3">
+                <i className="bi bi-geo-alt me-2"></i>
+                Razi hostel, 318
+              </p>
+              <h2 className="product-price mb-4">Rs. 1,920</h2>
 
-            {/* More from store */}
-            <div className="section mt-4">
-              <div className="section-header">More from this store</div>
-              <div className="product-grid">
-                {['Gucci duffle bag', 'Laptop', 'Jacket', 'Another Bag'].map((item, idx) => (
-                  <div key={idx} className="product-small-card">
-                    <img
-                      src="https://via.placeholder.com/100"
-                      alt={item}
-                      className="small-img"
-                    />
-                    <p className="item-title">{item}</p>
-                    <p className="item-price">₨960</p>
-                    <p className="rating-small">⭐⭐⭐⭐☆ (65)</p>
+              <div className="d-flex gap-3 mb-4">
+                <Button variant="primary" size="lg" className="flex-grow-1">
+                  Buy Now
+                </Button>
+                <Button variant="outline-primary" size="lg">
+                  <FaShare />
+                </Button>
+              </div>
+
+              <Nav variant="tabs" className="mb-4">
+                <Nav.Item>
+                  <Nav.Link 
+                    active={activeTab === 'description'} 
+                    onClick={() => setActiveTab('description')}
+                  >
+                    Description
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link 
+                    active={activeTab === 'reviews'} 
+                    onClick={() => setActiveTab('reviews')}
+                  >
+                    Reviews
+                  </Nav.Link>
+                </Nav.Item>
+              </Nav>
+
+              <Tab.Content>
+                <Tab.Pane active={activeTab === 'description'}>
+                  <p className="text-muted">
+                    PlayStation 5 Controller Skin: high-quality vinyl with adhesive
+                    for easy bubble-free install & mess-free application. Perfect fit
+                    for your PS5 controller with precise cutouts for all buttons and
+                    ports.
+                  </p>
+                </Tab.Pane>
+                <Tab.Pane active={activeTab === 'reviews'}>
+                  <div className="review-item mb-4">
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <h6 className="mb-0">John Doe</h6>
+                      <small className="text-muted">2 days ago</small>
+                    </div>
+                    <div className="mb-2">{renderStars(5)}</div>
+                    <p className="text-muted mb-0">
+                      PlayStation 5 Controller Skin – high-quality vinyl with easy
+                      bubble-free install & mess-free application.
+                    </p>
                   </div>
-                ))}
-              </div>
+                  <Button variant="outline-primary">Write a Review</Button>
+                </Tab.Pane>
+              </Tab.Content>
             </div>
-          </div>
+          </Col>
+        </Row>
 
-          {/* Show More */}
-          <div className="text-center mt-3 mb-2">
-            <button className="btn btn-show-more">Show More</button>
+        {/* Related Products */}
+        <div className="related-products mt-5">
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h3 className="mb-0">More from this store</h3>
+            <Button variant="link" className="text-primary p-0">
+              View All <FaChevronRight />
+            </Button>
           </div>
+          <Row>
+            {relatedProducts.map((product) => (
+              <Col key={product.id} xs={6} md={3} className="mb-4">
+                <Card className="h-100 product-card">
+                  <Card.Img 
+                    variant="top" 
+                    src={product.image} 
+                    alt={product.name}
+                    className="product-image"
+                  />
+                  <Card.Body>
+                    <Card.Title className="product-name">{product.name}</Card.Title>
+                    <div className="d-flex align-items-center mb-2">
+                      <div className="me-2">{renderStars(product.rating)}</div>
+                      <small className="text-muted">({product.reviews})</small>
+                    </div>
+                    <Card.Text className="product-price mb-0">
+                      Rs. {product.price}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
         </div>
-      </div>
+      </Container>
 
-      {/* CartBar (only if showCart is true) */}
-      <AnimatePresence>
-      {showCart && <Cartbar onClose={toggleCart} mode="overlay"  />}
-      </AnimatePresence>
-
-            <div
-        className="chat-float-button"
+      {/* Chat Button */}
+      <Button
+        variant="primary"
+        className="chat-button rounded-circle"
         onClick={openChat}
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          zIndex: 999,
-          backgroundColor: "#4b00e0",
-          color: "white",
-          borderRadius: "50%",
-          width: "50px",
-          height: "50px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          cursor: "pointer",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
-        }}
       >
-        <i className="bi bi-chat-dots-fill" style={{ fontSize: "1.4rem" }}></i>
-      </div>
+        <i className="bi bi-chat-dots-fill"></i>
+      </Button>
     </div>
-
-
-
   );
 }
 

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import './SignupPage.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import { Container, Row, Col, Form, Button, Card, InputGroup, Spinner } from 'react-bootstrap';
+import { FaEnvelope, FaLock, FaUser, FaBuilding, FaIdCard, FaFacebook, FaInstagram } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import './SignupPage.css';
 import axios from 'axios';
 
 function SignupPage() {
@@ -14,16 +16,17 @@ function SignupPage() {
     hostel: '',
     roomNumber: '',
     department: '',
-    role: 'buyer' // default role
+    role: 'buyer', // default role
+    termsAccepted: false // add terms acceptance tracking
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prevState => ({
       ...prevState,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -35,6 +38,13 @@ function SignupPage() {
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    // Validate terms acceptance
+    if (!formData.termsAccepted) {
+      setError('You must accept the Terms of Service and Privacy Policy');
       setLoading(false);
       return;
     }
@@ -54,6 +64,8 @@ function SignupPage() {
         // Store user ID and email for OTP verification
         localStorage.setItem('tempUserId', response.data.userId);
         localStorage.setItem('userEmail', formData.email);
+        // Store role info to use after verification
+        localStorage.setItem('userRole', formData.role);
         // Navigate to OTP verification page
         navigate('/verify-email');
       }
@@ -65,176 +77,293 @@ function SignupPage() {
   };
 
   return (
-    <div className="signup-container">
-      <div className="signup-box">
-        <h1 className="brand-title">NUSTIFY</h1>
-        <p className="brand-subtitle">NUST Market Place</p>
-
-        <div className="form-card">
-          <h4>Create Your Account</h4>
-
-          <div className="profile-pic-placeholder">
-            <i className="bi bi-person-circle" style={{ fontSize: '2rem', color: 'white' }}></i>
-          </div>
-
-          {error && <div className="alert alert-danger">{error}</div>}
-
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3 text-start">
-              <label className="form-label">Full Name</label>
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-person-fill"></i></span>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  placeholder="Enter your full name"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  required 
-                />
-              </div>
+    <div className="signup-page">
+      <Container fluid>
+        <Row className="min-vh-100">
+          {/* Left Column - Image/Banner (visible only on desktop) */}
+          <Col lg={6} className="d-none d-lg-flex signup-banner">
+            <div className="banner-content">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <h2 className="banner-title">Join Nustify Today</h2>
+                <p className="banner-subtitle">Connect with the NUST community and start buying or selling</p>
+                <div className="banner-features">
+                  <div className="feature-item">
+                    <div className="feature-icon">🔒</div>
+                    <div className="feature-text">Secure account verification</div>
+                  </div>
+                  <div className="feature-item">
+                    <div className="feature-icon">💰</div>
+                    <div className="feature-text">Buy and sell with ease</div>
+                  </div>
+                  <div className="feature-item">
+                    <div className="feature-icon">🎓</div>
+                    <div className="feature-text">Made for NUST students</div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
+          </Col>
 
-            <div className="mb-3 text-start">
-              <label className="form-label">Email ID</label>
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-envelope-fill"></i></span>
-                <input 
-                  type="email" 
-                  className="form-control" 
-                  placeholder="your Email@gmail.com"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required 
-                />
-              </div>
-            </div>
-
-            <div className="mb-3 text-start">
-              <label className="form-label">Password</label>
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-lock-fill"></i></span>
-                <input 
-                  type="password" 
-                  className="form-control" 
-                  placeholder="Create a strong password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required 
-                />
-              </div>
-            </div>
-
-            <div className="mb-3 text-start">
-              <label className="form-label">Confirm Password</label>
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-lock-fill"></i></span>
-                <input 
-                  type="password" 
-                  className="form-control" 
-                  placeholder="Confirm your password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required 
-                />
-              </div>
-            </div>
-
-            <div className="mb-3 text-start">
-              <label className="form-label">Hostel Name</label>
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-building"></i></span>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  placeholder="Your hostel name like Razi"
-                  name="hostel"
-                  value={formData.hostel}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <div className="mb-3 text-start">
-              <label className="form-label">Room Number</label>
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-building"></i></span>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  placeholder="Your hostel name like Razi"  
-                  name="roomNumber"
-                  value={formData.roomNumber}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <div className="mb-3 text-start">
-              <label className="form-label">Department</label>
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-building"></i></span>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  placeholder="Your hostel name like Razi"
-                  name="department"
-                  value={formData.department}
-                  onChange={handleChange}
-                  required 
-                />
-              </div>
-            </div>
-
-            <div className="mb-3 text-start">
-              <label className="form-label">Role</label>
-              <div className="input-group">
-                <span className="input-group-text"><i className="bi bi-person-badge"></i></span>
-                <select 
-                  className="form-control"
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="buyer">Buyer</option>
-                  <option value="seller">Seller</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="form-check text-start mb-3">
-              <input type="checkbox" className="form-check-input" id="termsCheck" required />
-              <label className="form-check-label" htmlFor="termsCheck">
-                I agree to the <a href="TermsOfService">Terms of Service</a> and <a href="PrivacyPolicy">Privacy Policy</a>
-              </label>
-            </div>
-
-            <button 
-              type="submit" 
-              className="btn btn-gradient w-100"
-              disabled={loading}
+          {/* Right Column - Signup Form */}
+          <Col lg={6} className="signup-form-container d-flex align-items-center justify-content-center">
+            <motion.div 
+              className="signup-form-wrapper"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
             >
-              {loading ? 'Creating Account...' : 'Create Account'}
-            </button>
+              <div className="text-center mb-4">
+                <h1 className="brand-title">NUSTIFY</h1>
+                <p className="brand-subtitle">NUST Market Place</p>
+              </div>
 
-            <div className="divider">Or Sign Up with</div>
+              <Card className="signup-card">
+                <Card.Body className="p-4">
+                  <div className="text-center mb-4">
+                    <div className="profile-icon">
+                      <FaUser size={28} />
+                    </div>
+                    <h4 className="mt-3 mb-4">Create Your Account</h4>
+                  </div>
 
-            <div className="social-buttons d-flex justify-content-between">
-              <button type="button" className="btn btn-outline-light"><i className="bi bi-instagram"></i> Instagram</button>
-              <button type="button" className="btn btn-outline-light"><i className="bi bi-facebook"></i> Facebook</button>
-            </div>
+                  {error && <div className="alert alert-danger">{error}</div>}
 
-            <div className="login-text">
-              Already have an account? <Link to="/login">Login</Link>
-            </div>
-          </form>
-        </div>
-      </div>
+                  <Form onSubmit={handleSubmit} className="signup-form">
+                    <Row>
+                      <Col md={12}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Full Name</Form.Label>
+                          <InputGroup>
+                            <InputGroup.Text className="bg-light">
+                              <FaUser />
+                            </InputGroup.Text>
+                            <Form.Control
+                              type="text"
+                              placeholder="Enter your full name"
+                              name="username"
+                              value={formData.username}
+                              onChange={handleChange}
+                              required
+                              style={{ color: 'black', background: '#fff' }}
+                            />
+                          </InputGroup>
+                        </Form.Group>
+                      </Col>
+
+                      <Col md={12}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Email ID</Form.Label>
+                          <InputGroup>
+                            <InputGroup.Text className="bg-light">
+                              <FaEnvelope />
+                            </InputGroup.Text>
+                            <Form.Control
+                              type="email"
+                              placeholder="your Email@gmail.com"
+                              name="email"
+                              value={formData.email}
+                              onChange={handleChange}
+                              required
+                              style={{ color: 'black', background: 'rgba(255, 255, 255, 0.15)' }}
+                            />
+                          </InputGroup>
+                        </Form.Group>
+                      </Col>
+
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Password</Form.Label>
+                          <InputGroup>
+                            <InputGroup.Text className="bg-light">
+                              <FaLock />
+                            </InputGroup.Text>
+                            <Form.Control
+                              type="password"
+                              placeholder="Create a strong password"
+                              name="password"
+                              value={formData.password}
+                              onChange={handleChange}
+                              required
+                              style={{ color: 'black', background: 'rgba(255, 255, 255, 0.15)' }}
+                            />
+                          </InputGroup>
+                        </Form.Group>
+                      </Col>
+
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Confirm Password</Form.Label>
+                          <InputGroup>
+                            <InputGroup.Text className="bg-light">
+                              <FaLock />
+                            </InputGroup.Text>
+                            <Form.Control
+                              type="password"
+                              placeholder="Confirm your password"
+                              name="confirmPassword"
+                              value={formData.confirmPassword}
+                              onChange={handleChange}
+                              required
+                              style={{ color: 'black', background: 'rgba(255, 255, 255, 0.15)' }}
+                            />
+                          </InputGroup>
+                        </Form.Group>
+                      </Col>
+
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Hostel Name</Form.Label>
+                          <InputGroup>
+                            <InputGroup.Text className="bg-light">
+                              <FaBuilding />
+                            </InputGroup.Text>
+                            <Form.Control
+                              type="text"
+                              placeholder="Your hostel name"
+                              name="hostel"
+                              value={formData.hostel}
+                              onChange={handleChange}
+                              style={{ color: 'black', background: 'rgba(255, 255, 255, 0.15)' }}
+                            />
+                          </InputGroup>
+                        </Form.Group>
+                      </Col>
+
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Room Number</Form.Label>
+                          <InputGroup>
+                            <InputGroup.Text className="bg-light">
+                              <FaBuilding />
+                            </InputGroup.Text>
+                            <Form.Control
+                              type="text"
+                              placeholder="Your room number"
+                              name="roomNumber"
+                              value={formData.roomNumber}
+                              onChange={handleChange}
+                              style={{ color: 'black', background: 'rgba(255, 255, 255, 0.15)' }}
+                            />
+                          </InputGroup>
+                        </Form.Group>
+                      </Col>
+
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Department</Form.Label>
+                          <InputGroup>
+                            <InputGroup.Text className="bg-light">
+                              <FaIdCard />
+                            </InputGroup.Text>
+                            <Form.Control
+                              type="text"
+                              placeholder="Your department"
+                              name="department"
+                              value={formData.department}
+                              onChange={handleChange}
+                              required
+                              style={{ color: 'red', background: 'rgba(255, 255, 255, 0.15)' }}
+                            />
+                          </InputGroup>
+                        </Form.Group>
+                      </Col>
+
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Role</Form.Label>
+                          <InputGroup>
+                            <InputGroup.Text className="bg-light">
+                              <FaUser />
+                            </InputGroup.Text>
+                            <Form.Select
+                              name="role"
+                              value={formData.role}
+                              onChange={handleChange}
+                              required
+                            >
+                              <option value="buyer">Buyer</option>
+                              <option value="seller">Seller</option>
+                            </Form.Select>
+                          </InputGroup>
+                          {formData.role === 'seller' && (
+                            <Form.Text className="text-danger">
+                              As a seller, you'll need to set up your store after registration.
+                            </Form.Text>
+                          )}
+                        </Form.Group>
+                      </Col>
+
+                      <Col md={12}>
+                        <Form.Group className="mb-4">
+                          <Form.Check
+                            type="checkbox"
+                            id="termsCheck"
+                            name="termsAccepted"
+                            checked={formData.termsAccepted}
+                            onChange={handleChange}
+                            label={
+                              <span>
+                                I agree to the <Link to="/terms" className="terms-link">Terms of Service</Link> and <Link to="/privacy" className="terms-link">Privacy Policy</Link>
+                              </span>
+                            }
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+
+                      <Col md={12}>
+                        <Button
+                          type="submit"
+                          className="btn-gradient w-100 py-2"
+                          disabled={loading}
+                        >
+                          {loading ? (
+                            <>
+                              <Spinner
+                                as="span"
+                                animation="border"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                                className="me-2"
+                              />
+                              Creating Account...
+                            </>
+                          ) : 'Create Account'}
+                        </Button>
+                      </Col>
+                    </Row>
+
+                    <div className="divider my-4">
+                      <span>Or Sign Up with</span>
+                    </div>
+
+                    <div className="social-login">
+                      <Button variant="outline-primary" className="social-btn">
+                        <FaFacebook /> Facebook
+                      </Button>
+                      <Button variant="outline-danger" className="social-btn">
+                        <FaInstagram /> Instagram
+                      </Button>
+                    </div>
+
+                    <div className="text-center mt-4">
+                      Already have an account?{' '}
+                      <Link to="/login" className="login-link">
+                        Login
+                      </Link>
+                    </div>
+                  </Form>
+                </Card.Body>
+              </Card>
+            </motion.div>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 }

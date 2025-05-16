@@ -1,0 +1,81 @@
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.product-card-image-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.3s ease;
+}
+
+.product-card:hover .product-card-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  background-color: #fff;
+  transform: scale(1.1);
+}
+
+.wishlist-btn:hover {
+  color: #dc3545;
+}
+
+.cart-btn:hover {
+  color: #0d6efd;
+}
+
+.bestseller-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #ffc107;
+  color: #000;
+  padding: 3px 8px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.card-title {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+} 

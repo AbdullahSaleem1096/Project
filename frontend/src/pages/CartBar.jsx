@@ -3,6 +3,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
 import './OnlineStore.css';
 
 const CartItem = ({ image, name, price, index }) => (
@@ -125,17 +126,19 @@ const CartBar = ({ onClose }) => {
             paddingBottom: "env(safe-area-inset-bottom)"
           }}
         >
-          <motion.button
-            whileTap={{ scale: 0.98 }}
-            className="btn w-100 text-white fw-semibold py-3"
-            style={{
-              background: "linear-gradient(to right, #007bff, #d63384)",
-              borderRadius: "0.8rem",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
-            }}
-          >
-            Proceed to Payment
-          </motion.button>
+          <Link to="/payment">
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              className="btn w-100 text-white fw-semibold py-3"
+              style={{
+                background: "linear-gradient(to right, #007bff, #d63384)",
+                borderRadius: "0.8rem",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
+              }}
+            >
+              Proceed to Payment
+            </motion.button>
+          </Link>
         </div>
 
         {/* Footer */}

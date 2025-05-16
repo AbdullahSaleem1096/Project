@@ -1,0 +1,142 @@
+.buyer-sidebar {
+  width: 250px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+  border-right: 1px solid #eee;
+  padding: 1.5rem 0;
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  margin-bottom: 2rem;
+}
+
+.sidebar-heading {
+  color: var(--text-light);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0 1.5rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  color: var(--text-dark);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.sidebar-icon {
+  font-size: 1.2rem;
+  margin-right: 0.75rem;
+  color: var(--text-light);
+  transition: color 0.2s ease;
+}
+
+.sidebar-link:hover {
+  background-color: rgba(107, 70, 193, 0.05);
+  color: var(--primary-purple);
+}
+
+.sidebar-link:hover .sidebar-icon {
+  color: var(--primary-purple);
+}
+
+.sidebar-link.active {
+  background-color: rgba(107, 70, 193, 0.1);
+  color: var(--primary-purple);
+  font-weight: 600;
+  border-left: 3px solid var(--primary-purple);
+}
+
+.sidebar-link.active .sidebar-icon {
+  color: var(--primary-purple);
+}
+
+.sidebar-badge {
+  position: absolute;
+  right: 1.5rem;
+  background-color: var(--primary-purple);
+  color: var(--white);
+  font-size: 0.7rem;
+  font-weight: 600;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 0 1.5rem;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}
+
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 0;
+  background: none;
+  border: none;
+  color: var(--error);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.sidebar-logout .sidebar-icon {
+  color: var(--error);
+}
+
+.sidebar-logout:hover {
+  color: #C53030;
+}
+
+.sidebar-logout:hover .sidebar-icon {
+  color: #C53030;
+}
+
+@media (max-width: 992px) {
+  .buyer-sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .buyer-sidebar {
+    padding: 1rem 0;
+  }
+  
+  .sidebar-link {
+    padding: 0.75rem 1rem;
+  }
+  
+  .sidebar-heading {
+    padding: 0 1rem;
+  }
+  
+  .sidebar-footer {
+    padding: 0 1rem;
+  }
+} 

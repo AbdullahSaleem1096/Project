@@ -1,16 +1,39 @@
+import React from 'react';
+import { Container, Row, Col, Card, Button, Breadcrumb } from 'react-bootstrap';
+import { FaHeart, FaTrashAlt, FaShoppingCart, FaStar, FaStarHalfAlt, FaChevronLeft } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Button, Card, Col, Container, Row } from 'react-bootstrap';
-import { FaArrowLeft, FaEllipsisV, FaRegTrashAlt, FaStar, FaStarHalfAlt } from 'react-icons/fa';
+import './Wishlist.css';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-const product = {
-  name: 'Gucci duffle bag',
-  price: '$960',
-  rating: 4.5,
-  reviews: 65,
-  image: 'https://via.placeholder.com/200x130.png?text=Gucci+Duffle+Bag',
-};
+const wishlistItems = [
+  {
+    id: 1,
+    name: 'Gucci duffle bag',
+    price: 960,
+    rating: 4.5,
+    reviews: 65,
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    description: 'Premium leather duffle bag, perfect for weekend getaways and travel.'
+  },
+  {
+    id: 2,
+    name: 'Gaming Controller',
+    price: 1200,
+    rating: 5.0,
+    reviews: 124,
+    image: 'https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    description: 'High-performance gaming controller with customizable buttons and extended battery life.'
+  },
+  {
+    id: 3,
+    name: 'Leather Jacket',
+    price: 2450,
+    rating: 4.0,
+    reviews: 39,
+    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+    description: 'Classic leather jacket with modern styling, suitable for all seasons.'
+  }
+];
 
 const Wishlist = () => {
   const renderStars = (rating) => {
@@ -19,62 +42,94 @@ const Wishlist = () => {
     return (
       <>
         {[...Array(fullStars)].map((_, i) => (
-          <FaStar key={i} className="text-warning me-1" />
+          <FaStar key={i} className="star-icon" />
         ))}
-        {halfStar && <FaStarHalfAlt className="text-warning me-1" />}
+        {halfStar && <FaStarHalfAlt className="star-icon" />}
       </>
     );
   };
 
   return (
-    <div style={{ backgroundColor: '#0A094F', color: 'white', minHeight: '100vh' , width: '500px'}}>
+    <div className="wishlist-page">
       <Container>
-        {/* Header */}
-        <Row className="py-3 align-items-center">
-          <Col xs="auto">
-            <FaArrowLeft size={20} />
-          </Col>
-          <Col>
-            <h4 className="mb-0 fw-bold">WISHLIST</h4>
-          </Col>
-          <Col xs="auto">
-            <FaEllipsisV />
-          </Col>
-        </Row>
-
-        {/* Wishlist Items */}
-        {[1, 2, 3].map((item, index) => (
+        <div className="page-header">
           <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.2, duration: 0.5 }}
+            transition={{ duration: 0.5 }}
           >
-            <Card className="mb-3 bg-dark text-white rounded-4 border-0" style={{ backgroundColor: '#1D1A64' }}>
-              <Card.Body>
-                <Row>
-                  <Col md={4} className="d-flex align-items-center justify-content-center">
-                    <img src={product.image} alt="Bag" className="img-fluid rounded" />
-                  </Col>
-                  <Col md={8}>
-                    <h5>{product.name}</h5>
-                    <p className="text-danger fw-bold">{product.price}</p>
-                    <div className="d-flex align-items-center">
-                      {renderStars(product.rating)}
-                      <span className="text-muted ms-2">({product.reviews})</span>
-                    </div>
-                    <div className="d-flex mt-3">
-                      <Button variant="outline-light" className="me-2">
-                        <FaRegTrashAlt />
-                      </Button>
-                      <Button style={{ backgroundColor: '#A259FF', border: 'none' }}>Add to Cart</Button>
-                    </div>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
+            <Breadcrumb>
+              <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/" }}>Home</Breadcrumb.Item>
+              <Breadcrumb.Item active>Wishlist</Breadcrumb.Item>
+            </Breadcrumb>
+            
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h2 className="page-title">
+                <FaHeart className="page-icon" /> My Wishlist
+              </h2>
+              <Link to="/shop" className="back-to-shop">
+                <FaChevronLeft /> Continue Shopping
+              </Link>
+            </div>
           </motion.div>
-        ))}
+        </div>
+
+        {wishlistItems.length > 0 ? (
+          <Row>
+            {wishlistItems.map((item, index) => (
+              <Col lg={4} md={6} className="mb-4" key={item.id}>
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                >
+                  <Card className="wishlist-card h-100">
+                    <div className="wishlist-card-image">
+                      <Card.Img variant="top" src={item.image} />
+                      <Button 
+                        variant="danger" 
+                        size="sm" 
+                        className="remove-btn"
+                      >
+                        <FaTrashAlt />
+                      </Button>
+                    </div>
+                    <Card.Body>
+                      <Card.Title>{item.name}</Card.Title>
+                      <div className="product-rating">
+                        {renderStars(item.rating)}
+                        <span className="review-count">({item.reviews})</span>
+                      </div>
+                      <Card.Text className="product-description">
+                        {item.description}
+                      </Card.Text>
+                      <div className="product-price">Rs. {item.price}</div>
+                      <Button variant="primary" className="cart-btn w-100">
+                        <FaShoppingCart className="me-2" /> Add to Cart
+                      </Button>
+                    </Card.Body>
+                  </Card>
+                </motion.div>
+              </Col>
+            ))}
+          </Row>
+        ) : (
+          <div className="empty-wishlist">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-center"
+            >
+              <FaHeart className="empty-icon" />
+              <h3>Your wishlist is empty</h3>
+              <p>Save items you like to your wishlist and they'll appear here.</p>
+              <Button variant="primary" as={Link} to="/shop">
+                Start Shopping
+              </Button>
+            </motion.div>
+          </div>
+        )}
       </Container>
     </div>
   );
