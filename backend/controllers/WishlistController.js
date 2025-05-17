@@ -5,12 +5,17 @@ const Product = require('../models/Product');
 exports.getWishlist = async (req, res) => {
   try {
     const userId = req.user.id;
+    console.log('Fetching wishlist for user:', userId);
     
     // Find wishlist and populate product details
-    let wishlist = await Wishlist.findOne({ userId }).populate('products');
+    let wishlist = await Wishlist.findOne({ userId }).populate({
+      path: 'products',
+      model: 'Product'
+    });
     
     if (!wishlist) {
       // If no wishlist exists, create an empty one
+      console.log('No wishlist found, creating new empty wishlist');
       wishlist = new Wishlist({
         userId,
         products: []
@@ -18,6 +23,7 @@ exports.getWishlist = async (req, res) => {
       await wishlist.save();
     }
     
+    console.log('Wishlist products count:', wishlist.products.length);
     res.status(200).json({
       success: true,
       wishlist: wishlist.products

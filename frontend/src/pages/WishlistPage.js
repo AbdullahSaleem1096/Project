@@ -35,25 +35,21 @@ const WishlistPage = () => {
   const fetchWishlist = async () => {
     try {
       setLoading(true);
+      console.log("Fetching wishlist...");
       const response = await wishlistAPI.getWishlist();
+      console.log("Wishlist response:", response);
       
       if (response.success) {
-        // Fetch detailed product information for each wishlist item
-        const productDetails = await Promise.all(
-          response.wishlist.map(async (productId) => {
-            try {
-              const productData = await productAPI.getProductById(productId);
-              return productData.product;
-            } catch (error) {
-              console.error(`Error fetching product ${productId}:`, error);
-              return null;
-            }
-          })
-        );
-        
-        // Filter out null values (products that couldn't be fetched)
-        const validProducts = productDetails.filter(product => product !== null);
-        setWishlistItems(validProducts);
+        if (Array.isArray(response.wishlist)) {
+          console.log("Valid products:", response.wishlist);
+          setWishlistItems(response.wishlist);
+        } else {
+          console.error("Wishlist response is not an array:", response.wishlist);
+          setError('Invalid wishlist data format');
+        }
+      } else {
+        console.error("Failed to fetch wishlist:", response);
+        setError('Failed to load wishlist data');
       }
     } catch (error) {
       console.error('Error fetching wishlist:', error);
