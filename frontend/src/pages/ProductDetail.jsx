@@ -54,13 +54,15 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (product) {
-      addToCart({
-        id: product._id,
+      console.log('Adding product to cart with ID:', product._id);
+      const cartItem = {
+        id: product._id,  // This should be the MongoDB _id
         name: product.name,
         price: product.price,
-        image: product.images && product.images.length > 0 ? product.images[0] : null,
-        quantity: quantity
-      });
+        image: product.images && product.images.length > 0 ? product.images[0] : null
+      };
+      
+      addToCart(cartItem, quantity);
       setAddedToCart(true);
       setTimeout(() => setAddedToCart(false), 2000);
     }

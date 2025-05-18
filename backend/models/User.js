@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     hostel: { type: String, required: true },
     roomNumber: { type: String, required: true }
   },
-  wallet: { type: Number, default: 0 },
+  wallet: { type: Number, default: 10000 },
   createdAt: { type: Date, default: Date.now, index: true },
   updatedAt: { type: Date, default: Date.now }
 });

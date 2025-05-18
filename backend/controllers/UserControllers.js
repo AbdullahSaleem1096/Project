@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const { sendOTPEmail } = require('./mailControllers');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 // Secret key for JWT
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
@@ -101,7 +102,27 @@ const verifyOTP = async (req, res) => {
         user.otp = undefined;
         await user.save();
 
-        res.json({ message: 'Email verified successfully' });
+        // Generate JWT token
+        const token = jwt.sign(
+            { 
+                id: user._id,
+                role: user.role,
+                email: user.email 
+            }, 
+            JWT_SECRET, 
+            { expiresIn: '24h' }
+        );
+
+        res.json({ 
+            message: 'Email verified successfully',
+            token,
+            user: {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role
+            }
+        });
 
     } catch (error) {
         console.error('OTP verification error:', error);
@@ -109,14 +130,62 @@ const verifyOTP = async (req, res) => {
     }
 };
 
-const loginUser = async (req, res) => {
+// Resend OTP
+const resendOTP = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
 
         const user = await User.findOne({ email });
         if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Generate new OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+        // Update user's OTP
+        user.otp = {
+            code: otp,
+            expiresAt: otpExpiry
+        };
+        await user.save();
+
+        // Send OTP email
+        const emailSent = await sendOTPEmail(email, otp);
+        if (!emailSent) {
+            return res.status(500).json({ message: 'Failed to send OTP email' });
+        }
+
+        res.json({ message: 'OTP resent successfully' });
+
+    } catch (error) {
+        console.error('Resend OTP error:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        console.log('Login attempt for email:', email);
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            console.log('Login failed: User not found');
             return res.status(401).json({ message: 'Invalid credentials' });
         }
+
+        console.log('User found:', {
+            id: user._id,
+            username: user.username,
+            role: user.role,
+            isVerified: user.isVerified
+        });
 
         if (!user.isVerified) {
             return res.status(401).json({ message: 'Please verify your email first' });
@@ -124,6 +193,7 @@ const loginUser = async (req, res) => {
 
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
+            console.log('Login failed: Invalid password');
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
@@ -137,6 +207,12 @@ const loginUser = async (req, res) => {
             JWT_SECRET, 
             { expiresIn: '24h' }
         );
+
+        console.log('Login successful:', {
+            id: user._id,
+            role: user.role,
+            tokenGenerated: !!token
+        });
 
         res.json({ 
             message: 'Login successful',
@@ -155,9 +231,64 @@ const loginUser = async (req, res) => {
     }
 };
 
+// Get user profile details
+const getUserProfile = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        
+        // Validate ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Invalid user ID format' 
+            });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'User not found' 
+            });
+        }
+
+        // Check if requesting user is the same as the user being requested
+        if (req.user.id !== userId) {
+            return res.status(403).json({ 
+                success: false, 
+                message: 'Unauthorized to access this profile' 
+            });
+        }
+
+        // Return user profile with complete information
+        res.json({
+            success: true,
+            user: {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+                phoneNumber: user.phoneNumber,
+                address: user.address,
+                wallet: user.wallet,
+                createdAt: user.createdAt
+            }
+        });
+    } catch (error) {
+        console.error('Error getting user profile:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to get user profile',
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     registerUser,
     verifyOTP,
-    loginUser
+    resendOTP,
+    loginUser,
+    getUserProfile
 };
 

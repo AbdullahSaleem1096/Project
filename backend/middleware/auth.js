@@ -19,7 +19,7 @@ exports.authenticateToken = async (req, res, next) => {
     }
     
     // Verify token
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, JWT_SECRET, async (err, decoded) => {
       if (err) {
         console.log('Token verification error:', err.message);
         return res.status(403).json({ success: false, message: 'Invalid token' });
@@ -27,8 +27,22 @@ exports.authenticateToken = async (req, res, next) => {
       
       // Add user info to request
       console.log('Decoded token:', JSON.stringify(decoded));
-      req.user = decoded;
-      next();
+      
+      // Verify user exists in database
+      try {
+        const user = await User.findById(decoded.id);
+        if (!user) {
+          return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        
+        // Use database user role instead of token role
+        decoded.role = user.role;
+        req.user = decoded;
+        next();
+      } catch (error) {
+        console.error('Database verification error:', error);
+        return res.status(500).json({ success: false, message: 'User verification error' });
+      }
     });
   } catch (error) {
     console.error('Error authenticating token:', error);
@@ -39,8 +53,13 @@ exports.authenticateToken = async (req, res, next) => {
 // Middleware to check if user is a seller
 exports.isSeller = async (req, res, next) => {
   try {
+    console.log('Checking seller privileges for user:', req.user.id, 'Role:', req.user.role);
     if (req.user.role !== 'seller') {
-      return res.status(403).json({ success: false, message: 'Access denied. Seller privileges required.' });
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Access denied. Seller privileges required.',
+        userRole: req.user.role
+      });
     }
     next();
   } catch (error) {

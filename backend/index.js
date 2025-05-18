@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
-const router = express.Router();
 const productRouter = express.Router();
 const storeRouter = require('./routes/storeRoutes');
 const wishlistRouter = require('./routes/wishlistRoutes');
+const userRouter = require('./routes/userRoutes');
+const orderRouter = require('./routes/orderRoutes');
 const connectDB = require('./config/connection');
-const {registerUser, loginUser, verifyOTP} = require('./controllers/UserControllers');
 const {
   createProduct,
   getAllProducts,
@@ -23,34 +23,26 @@ const cors = require('cors');
 connectDB();
 
 // Middleware
-app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:5173'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// User Routes
-router.post('/register', registerUser);
-router.post('/verify-otp', verifyOTP);
-router.post('/login', loginUser);
-
-// Product Routes
+// Define Product routes
 productRouter.post('/', validateProductData, createProduct);
 productRouter.get('/', getAllProducts);
 productRouter.get('/search', searchProducts);
-productRouter.get('/store/:storeId', getProductsByStore);
-productRouter.get('/:id/related', validateProductId, getRelatedProducts);
 productRouter.get('/:id', validateProductId, getProductById);
+productRouter.get('/:id/related', validateProductId, getRelatedProducts);
+productRouter.get('/store/:storeId', getProductsByStore);
 productRouter.put('/:id', validateProductId, validateProductData, updateProduct);
 productRouter.delete('/:id', validateProductId, deleteProduct);
 
 // Mount routers
-app.use('/api/user', router);
+app.use('/api/user', userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/stores', storeRouter);
 app.use('/api/wishlist', wishlistRouter);
+app.use('/api/orders', orderRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

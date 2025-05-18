@@ -179,6 +179,20 @@ exports.setupStore = async (req, res) => {
     const { sellerId } = req.params;
     const storeData = req.body;
     
+    console.log('Store setup requested by user:', req.user.id, 'Role:', req.user.role);
+    console.log('Setting up store for seller ID:', sellerId);
+    
+    // Check if the requesting user is a seller trying to set up their own store
+    // or an admin (who can set up stores for any seller)
+    if (req.user.role === 'seller' && req.user.id !== sellerId) {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Sellers can only setup their own store',
+        requestedSeller: sellerId,
+        currentUser: req.user.id
+      });
+    }
+    
     // Check if user exists and is a seller
     const seller = await User.findById(sellerId);
     if (!seller) {
@@ -186,7 +200,11 @@ exports.setupStore = async (req, res) => {
     }
     
     if (seller.role !== 'seller') {
-      return res.status(403).json({ success: false, message: 'Only sellers can create stores' });
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Only sellers can have stores',
+        userRole: seller.role
+      });
     }
     
     // Check if seller already has a store

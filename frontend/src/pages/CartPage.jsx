@@ -3,10 +3,12 @@ import { Container, Row, Col, Card, Button, Table, Alert, Spinner } from 'react-
 import { FaTrash, FaMinus, FaPlus, FaArrowLeft } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useOrder } from '../context/OrderContext';
 import './CartPage.css';
 
 const CartPage = () => {
   const { cartItems, updateQuantity, removeFromCart, clearCart, getSubtotal, loading } = useCart();
+  const { prepareCheckout } = useOrder();
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   
@@ -25,6 +27,20 @@ const CartPage = () => {
       // Clear error after 3 seconds
       setTimeout(() => setError(null), 3000);
     }
+  };
+
+  // Handle checkout process
+  const handleProceedToCheckout = () => {
+    // Check if user is logged in
+    const user = localStorage.getItem('user');
+    if (!user) {
+      navigate('/login?redirect=payment');
+      return;
+    }
+    
+    // Prepare order details for checkout
+    prepareCheckout();
+    navigate('/payment');
   };
 
   // Calculate shipping cost (free over Rs. 1000)
@@ -179,18 +195,21 @@ const CartPage = () => {
                   </div>
                   
                   <div className="d-grid gap-2">
-                    <Link to="/payment" className="w-100">
-                      <Button variant="primary" className="w-100" disabled={loading}>
-                        {loading ? (
-                          <>
-                            <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                            <span className="ms-2">Processing...</span>
-                          </>
-                        ) : (
-                          'Proceed to Checkout'
-                        )}
-                      </Button>
-                    </Link>
+                    <Button 
+                      variant="primary" 
+                      className="w-100" 
+                      disabled={loading}
+                      onClick={handleProceedToCheckout}
+                    >
+                      {loading ? (
+                        <>
+                          <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                          <span className="ms-2">Processing...</span>
+                        </>
+                      ) : (
+                        'Proceed to Checkout'
+                      )}
+                    </Button>
                     
                     <Button 
                       variant="outline-primary" 

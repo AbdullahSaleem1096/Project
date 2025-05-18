@@ -281,6 +281,52 @@ export const userAPI = {
   }
 };
 
+// Order API calls
+export const orderAPI = {
+  // Create a new order
+  createOrder: async (orderData) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication required to create an order');
+      }
+
+      console.log('Creating order with token and data:', { 
+        hasToken: !!token, 
+        items: orderData.items?.length 
+      });
+
+      const response = await api.post('/orders', orderData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating order:', error);
+      throw error;
+    }
+  },
+
+  // Get user's orders
+  getUserOrders: async () => {
+    try {
+      const response = await api.get('/orders');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      throw error;
+    }
+  },
+
+  // Get order details
+  getOrderDetails: async (orderId) => {
+    try {
+      const response = await api.get(`/orders/${orderId}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching order ${orderId}:`, error);
+      throw error;
+    }
+  }
+};
+
 // Wishlist API calls
 export const wishlistAPI = {
   // Get user's wishlist

@@ -142,20 +142,43 @@ const MakeStore = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!userData) return;
+    if (!userData) {
+      setError('User data is missing. Please login again.');
+      navigate('/login');
+      return;
+    }
     
     setLoading(true);
     setError(null);
     
     try {
+      // Log current user data
+      console.log('Setting up store with user data:', {
+        id: userData._id,
+        username: userData.username,
+        role: userData.role
+      });
+      
       // Add seller ID to form data
       const storeData = {
         ...formData,
         sellerId: userData._id
       };
       
+      // Log API call details
+      console.log('Sending request to setup store for seller ID:', userData._id);
+      console.log('Store data being sent:', storeData);
+      
+      // Check auth token
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication token is missing. Please login again.');
+      }
+      
       // Call API to set up store
       const response = await storeAPI.setupStore(userData._id, storeData);
+      
+      console.log('Store setup response:', response);
       
       if (response.success) {
         setSuccess(true);
@@ -166,7 +189,19 @@ const MakeStore = () => {
       }
     } catch (error) {
       console.error('Error setting up store:', error);
-      setError(error.response?.data?.message || 'Failed to set up store. Please try again.');
+      
+      // Extract more detailed error information
+      const errorMessage = error.response?.data?.message || 'Failed to set up store. Please try again.';
+      const errorDetails = error.response?.data?.userRole 
+        ? `Current user role: ${error.response.data.userRole}` 
+        : '';
+      
+      setError(`${errorMessage} ${errorDetails}`);
+      
+      // If user role is the issue, we might need to refresh the token
+      if (error.response?.data?.userRole === 'buyer') {
+        alert('Your account is not registered as a seller. Please contact support or register a seller account.');
+      }
     } finally {
       setLoading(false);
     }
