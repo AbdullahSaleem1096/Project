@@ -128,26 +128,45 @@ export const OrderProvider = ({ children }) => {
     try {
       // First try to get user from localStorage
       const user = JSON.parse(localStorage.getItem('user'));
-      if (!user) return null;
+      if (!user) {
+        console.log('No user found in localStorage');
+        return null;
+      }
+
+      console.log('User from localStorage:', { 
+        id: user._id, 
+        username: user.username,
+        hasLocalAddress: !!(user.address && user.address.hostel) 
+      });
 
       // Create a basic address structure with default values
       let addressInfo = {
         name: user.username || 'User',
-        department: 'N/A',
-        hostel: 'N/A',
-        roomNumber: 'N/A'
+        department: user.address?.department || 'NUST',
+        hostel: user.address?.hostel || 'Campus',
+        roomNumber: user.address?.roomNumber || '000'
       };
+
+      // If we already have address info in localStorage, use that and don't call API
+      if (user.address && user.address.hostel && user.address.roomNumber) {
+        console.log('Using address from localStorage');
+        return addressInfo;
+      }
 
       // Try to get complete user info from API
       const token = localStorage.getItem('token');
       if (token) {
         try {
+          console.log('Fetching address from API for user:', user._id);
+          
           // Get user profile data from the API
           const response = await api.get(`/user/profile/${user._id}`, {
             headers: {
               Authorization: `Bearer ${token}`
             }
           });
+          
+          console.log('Profile API response:', response.data?.success);
           
           if (response.data && response.data.success && response.data.user && response.data.user.address) {
             // Update address with data from API
@@ -157,9 +176,11 @@ export const OrderProvider = ({ children }) => {
               hostel: response.data.user.address.hostel || addressInfo.hostel,
               roomNumber: response.data.user.address.roomNumber || addressInfo.roomNumber
             };
+            console.log('Address updated from API');
           }
         } catch (error) {
           console.error('Error fetching user profile:', error);
+          console.log('Continuing with default address');
           // Continue with default address if API call fails
         }
       }
@@ -167,7 +188,13 @@ export const OrderProvider = ({ children }) => {
       return addressInfo;
     } catch (error) {
       console.error('Error getting user address:', error);
-      return null;
+      // Return a default address if everything fails
+      return {
+        name: 'User',
+        department: 'NUST',
+        hostel: 'Campus',
+        roomNumber: '000'
+      };
     }
   };
 

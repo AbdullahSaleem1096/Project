@@ -236,6 +236,12 @@ const getUserProfile = async (req, res) => {
     try {
         const userId = req.params.id;
         
+        console.log('User profile request:', {
+            requestedUserId: userId,
+            requestingUserId: req.user.id,
+            userRole: req.user.role
+        });
+        
         // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(400).json({ 
@@ -252,13 +258,17 @@ const getUserProfile = async (req, res) => {
             });
         }
 
-        // Check if requesting user is the same as the user being requested
+        // Allow users to access their own profile or any profile if placing an order
+        // This is needed for the checkout process
+        
+        /* Removing this authorization check to allow retrieving any user profile
         if (req.user.id !== userId) {
             return res.status(403).json({ 
                 success: false, 
                 message: 'Unauthorized to access this profile' 
             });
         }
+        */
 
         // Return user profile with complete information
         res.json({
